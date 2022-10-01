@@ -6,7 +6,11 @@ const {
   register,
   activateAccount,
   login,
-  sendVerification
+  sendVerification,
+  findUser,
+  sendResetPasswordCode,
+  validateResetCode,
+  newPassword
 } = require("../controllers/user");
 const router = express.Router();
 
@@ -16,6 +20,9 @@ router.post("/activate",authUser, activateAccount);
 router.post("/login", login);
 //make sure user is logged in (authUser)
 router.post("/sendVerification",authUser,sendVerification)
-                                                                                             
+router.post("/findUser",findUser)
+router.post("/sendResetPasswordCode",sendResetPasswordCode)   
+router.post("/validateResetCode",validateResetCode)  
+router.post("/newPassword",newPassword)                                                                                        
 
 module.exports = router;

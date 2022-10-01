@@ -8,26 +8,21 @@ import SentVerification from "../../components/home/sentVerification";
 import Stories from "../../components/home/stories";
 import useClickOutside from "../../helpers/ClickOutside";
 
-import "./style.css"
+import "./style.css";
 export default function Home() {
-const {user}= useSelector((user)=>({...user}))
+  const { user } = useSelector((user) => ({ ...user }));
   return (
     <div className="home">
-    
       <Header />
-      <LeftHome user={user}/>
-    
+      <LeftHome user={user} />
+
       <div className="home_middle">
-    
-        <Stories/>
-        {user.verified ?"":(
- <SentVerification user={user}/>
-        )}
-       
-       
-        <CreatePost user={user}/>
+        <Stories />
+        {user.verified === false && <SentVerification user={user} />}
+
+        <CreatePost user={user} />
       </div>
-      <RightHome user={user}/>
+      <RightHome user={user} />
     </div>
   );
 }

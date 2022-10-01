@@ -4,11 +4,13 @@ const {
   validUserName,
 } = require("../helpers/validation");
 const User = require("../models/User");
+const Code = require("../models/Code");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../helpers/token");
-const { sentVerificationEmail } = require("../helpers/mailer");
+const { sentVerificationEmail, sentResetCode } = require("../helpers/mailer");
 const jwt = require("jsonwebtoken");
 const { redis } = require("googleapis/build/src/apis/redis");
+const generateCode = require("../helpers/generateCode");
 
 //register
 exports.register = async (req, res) => {
@@ -25,6 +27,7 @@ exports.register = async (req, res) => {
       gender,
     } = req.body;
 
+   
     //validations
     if (!validateEmail(email)) {
       return res.status(400).json({ message: "invalid email address" });
@@ -186,6 +189,79 @@ exports.sendVerification = async (req, res) => {
     return res
       .status(200)
       .json({ message: "Email verification link has been sent to your mail" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//resetting password
+exports.findUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email }).select("-password");
+    if (!user) {
+      return res.status(400).json({ message: "Account does not exist" });
+    }
+    return res.status(200).json({
+      email: user.email,
+      picture: user.picture,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//creating reset password verification code
+exports.sendResetPasswordCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email }).select("-password");
+    await Code.findOneAndRemove({ user: user._id });
+    const code = generateCode(5);
+    const savedCode = await new Code({
+      code,
+      user: user._id,
+    }).save();
+    sentResetCode(user.email, user.first_name, code);
+    return res.status(200).json({
+      message: "Email reset code has been sent to your account",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// verifying req.body reset password code
+exports.validateResetCode = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const user = await User.findOne({ email });
+    const Dbcode = await Code.findOne({ user: user._id });
+    if (Dbcode.code !== code) {
+      return res.status(400).json({
+        message: "Invalid verification code",
+      });
+    }
+    return res.status(200).json({ message: "Okay" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// new password
+
+exports.newPassword = async (req, res) => {
+  try {
+    const { password, email } = req.body;
+
+    const cryptedPassword = await bcrypt.hash(password, 12);
+    await User.findOneAndUpdate(
+      { email },
+      {
+        password: cryptedPassword,
+      }
+    );
+    res.status(200).send({ message:"Password has been updated successfully."});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
