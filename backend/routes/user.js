@@ -1,5 +1,5 @@
 const express = require("express");
-const { authUser } = require("../controllers/middlewares/auth");
+const { authUser } = require("../middlewares/auth");
 
 
 const {

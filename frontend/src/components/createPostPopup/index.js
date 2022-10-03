@@ -1,34 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import "./style.css";
-import Picker from "emoji-picker-react";
+import EmojiPickerBackground from "./EmojiPickerBackground";
+import AddToYourPost from "./AddToYourPost";
+import ImagePreview from "./ImagePreview";
 
 export default function CreatePostPopup({ user }) {
+  const [showPrev, setShowPrev] = useState(true);
   const [text, setText] = useState("");
-  const [cursorPosition,setCursorPosition] = useState()
-  const [showPrev, setShowPrev] = useState(false);
-  const [picker, setPicker] = useState(false);
-  const textRef= useRef(null);
- 
-  useEffect(() => {
-   textRef.current.selectionEnd = cursorPosition;
-  }, [cursorPosition])
-
-
- const handleEmoji= (e,{emoji})=>{
-//accessing the textRef
- const ref=textRef.current
- //when click emoji it get focused in textarea
- ref.focus()
- const start= text.substring(0, ref.selectionStart)
- const end = text.substring(ref.selectionStart)
- const newText = start + emoji +end;
- setText(newText);
- setCursorPosition(start.length+emoji.length)
- }
-
-
-
-console.log(cursorPosition);
+  const [images, setImages] = useState([]);
+  
 
   return (
     <div className="blur">
@@ -52,41 +32,24 @@ console.log(cursorPosition);
             </div>
           </div>
         </div>
-        
-          {/* <textarea
-            maxLength="100"
-            value={text}
-            className="post_input"
-            placeholder={`What's on your mind,${user?.first_name}`}
-            onChange={(e) => setText(e.target.value)}
-          /> */}
-          {!showPrev && (
-           <div className="flex_center">
-            <textarea
-              maxLength="100"
-              value={text}
-              ref={textRef}
-              className="post_input"
-              placeholder={`What's on your mind,${user?.first_name}`}
-              onChange={(e) => setText(e.target.value)}
-            />
-             </div>
-          )}
-          <div className="post_emojis_wrap">
-            {picker && (
-              <div className="comment_emoji_picker remove">
-                <Picker onEmojiClick={handleEmoji}/>
-              </div>
-            )}
-            <img src="../../../icons/colorful.png" alt=""/>
-            <i className="emoji_icon_large" 
-            onClick={()=>{
-                setPicker((prev)=>!prev)
-            }}
-            ></i>
-          </div>
-        </div>
+
+        {!showPrev ? (
+          <>
+            <EmojiPickerBackground text={text} user={user} setText={setText} />
+          </>
+        ) : (
+          <ImagePreview
+            text={text}
+            user={user}
+            setText={setText}
+            images={images}
+            setImages={setImages}
+            setShowPrev={setShowPrev}
+          />
+        )}
+        <AddToYourPost   setShowPrev={setShowPrev}/>
+        <button className="post_submit">Post</button>
       </div>
-    
+    </div>
   );
 }
