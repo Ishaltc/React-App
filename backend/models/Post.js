@@ -10,6 +10,9 @@ const postSchema = new mongoose.Schema(
       enum: ["profilePicture", "cover", null],
       default: null,
     },
+    text: {
+      type: String,
+    },
     images: {
       type: Array,
     },
@@ -45,4 +48,4 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Post",postSchema)
+module.exports = mongoose.model("Post", postSchema);

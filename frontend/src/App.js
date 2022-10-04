@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import AdminHome from "./AdminPages/home";
@@ -11,15 +12,15 @@ import Reset from "./Pages/reset";
 import LoggedInRoutes from "./routes/LoggedInRoutes";
 import NotLoggedInRoutes from "./routes/NotLoggedInRoutes";
 
-function App() {  
-
-  const {user} = useSelector((state)=>({...state}))
+function App() {
+  const [ visible, setVisible ] = useState(false);
+  const { user } = useSelector((state) => ({ ...state }));
   return (
     <div>
-      <CreatePostPopup user={user}/>
+      {visible && <CreatePostPopup user={user} setVisible={setVisible} />}
       <Routes>
         <Route element={<LoggedInRoutes />}>
-          <Route path="/" element={<Home />} exact />
+          <Route path="/" element={<Home setVisible={setVisible} />} exact />
           <Route path="/profile" element={<Profile />} exact />
           <Route path="/activate/:token" element={<Activate />} exact />
         </Route>
@@ -28,8 +29,8 @@ function App() {
         </Route>
         <Route path="/reset" element={<Reset />} exact />
         {/* admin's */}
-        <Route path="/admin-home" element={<AdminHome />} exact />
-        <Route path="/admin-login" element={<AdminLogin />} exact />
+        {/* <Route path="/admin-home" element={<AdminHome />} exact />
+        <Route path="/admin-login" element={<AdminLogin />} exact /> */}
       </Routes>
     </div>
   );

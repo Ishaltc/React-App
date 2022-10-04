@@ -9,7 +9,7 @@ import Stories from "../../components/home/stories";
 import useClickOutside from "../../helpers/ClickOutside";
 
 import "./style.css";
-export default function Home() {
+export default function Home({setVisible}) {
   const { user } = useSelector((user) => ({ ...user }));
   return (
     <div className="home">
@@ -20,7 +20,7 @@ export default function Home() {
         <Stories />
         {user.verified === false && <SentVerification user={user} />}
 
-        <CreatePost user={user} />
+        <CreatePost user={user} setVisible={setVisible} />
       </div>
       <RightHome user={user} />
     </div>

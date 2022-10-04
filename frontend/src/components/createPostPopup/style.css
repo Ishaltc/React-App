@@ -350,3 +350,68 @@
  .singular_grid img:nth-child(1){
   grid-column:1/3;
  }
+
+ .post_backgrounds{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+ }
+ .post_backgrounds img{
+  width:35px;
+  height:35px;
+  object-fit: cover;  
+  border-radius: 10px;
+ }
+ .no_bg{
+  background:var(--bg-secondary);
+  width:35px;
+  height:35px;
+  object-fit: cover;  
+  cursor: pointer;
+  border-radius: 10px;
+ }
+ .bgHandler{
+  height: 360px;
+  width:100%;
+  background-size: cover;
+ }
+ .bgHandler textarea {
+  text-align: center;
+  height: 360px;
+  margin-top: 10px;
+ }
+
+ /*---Error post ---*/
+ .post_error{
+  position: absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left: 0;
+  background: var(--bg-primary);
+  opacity:0.8 ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  gap:10px;
+  color: red;
+  animation: anim 0.3s;
+  border-radius: 5px;
+  padding:3rem
+  
+ }
+ .postError_error{
+width: 75%;
+font-weight: 600;
+ }
+ /*---Error post ---*/
+
+ @keyframes anim {
+  0%{
+    width: 0;
+  }
+  100%{
+    width: 100%;
+  }
+ }
